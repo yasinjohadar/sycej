@@ -1,0 +1,520 @@
+/*
+ * Header: a thin utility strip, then the navigation as a floating ink "island"
+ * framed apart from the page beneath it. The island is ink in both themes so it
+ * reads the same over the dark heroes and over light content once scrolled.
+ */
+
+/* ---------- Utility strip ---------- */
+
+.fe-topbar {
+    position: relative;
+    z-index: 51;
+    background: #0a1a27;
+    border-block-end: 1px solid rgba(143, 224, 185, 0.12);
+    color: rgba(230, 240, 241, 0.68);
+    font-size: 0.82rem;
+}
+
+.fe-topbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-block-size: 40px;
+}
+
+.fe-topbar__info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 26px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.fe-topbar__info li,
+.fe-topbar__info a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.fe-topbar a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.25s;
+}
+
+.fe-topbar a:hover {
+    color: var(--fe-mint-light);
+}
+
+.fe-topbar .fe-icon {
+    color: var(--fe-mint-light);
+}
+
+.fe-topbar__social {
+    display: flex;
+    gap: 6px;
+}
+
+.fe-topbar__social a {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 28px;
+    block-size: 28px;
+    border-radius: 50%;
+    transition: background 0.25s, color 0.25s;
+}
+
+.fe-topbar__social a:hover {
+    background: rgba(82, 173, 132, 0.18);
+}
+
+@media (max-width: 760px) {
+    .fe-topbar {
+        display: none;
+    }
+}
+
+/* ---------- Bar ---------- */
+
+.fe-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 50;
+}
+
+/* Full-width ink bar; its content aligns to the page shell. */
+.fe-island {
+    position: relative;
+    isolation: isolate;
+    box-shadow: 0 18px 40px -24px rgba(5, 16, 24, 0.7);
+    color: #fff;
+    transition: box-shadow 0.3s;
+}
+
+/*
+ * Glass and gradient live on a pseudo-element: backdrop-filter on the bar itself
+ * would become the containing block of the fixed mobile drawer and trap it.
+ */
+.fe-island::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(ellipse 30% 140% at 0% 0%, rgba(82, 173, 132, 0.22), transparent 70%),
+        radial-gradient(ellipse 30% 140% at 100% 0%, rgba(37, 124, 147, 0.3), transparent 70%),
+        linear-gradient(135deg, rgba(23, 50, 77, 0.94), rgba(12, 30, 46, 0.95));
+    backdrop-filter: saturate(1.5) blur(16px);
+    -webkit-backdrop-filter: saturate(1.5) blur(16px);
+}
+
+/* A line of brand colour along the bar's lower edge, brightest at the centre. */
+.fe-island::after {
+    content: '';
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    block-size: 2px;
+    background: linear-gradient(90deg, rgba(37, 124, 147, 0.25), #52ad84 35%, #257c93 65%, rgba(82, 173, 132, 0.25));
+}
+
+.fe-header[data-scrolled] .fe-island {
+    box-shadow: 0 22px 50px -20px rgba(5, 16, 24, 0.85);
+}
+
+.fe-island__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-block: 14px;
+    transition: padding 0.3s ease;
+}
+
+.fe-header[data-scrolled] .fe-island__top {
+    padding-block: 9px;
+}
+
+/* ---------- Brand ---------- */
+
+.fe-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    min-inline-size: 0;
+    text-decoration: none;
+}
+
+.fe-brand__mark {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 50px;
+    block-size: 50px;
+    padding: 6px;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.06), 0 0 26px rgba(82, 173, 132, 0.35);
+    transition: inline-size 0.3s, block-size 0.3s;
+}
+
+.fe-brand__mark img {
+    inline-size: 100%;
+    block-size: auto;
+}
+
+.fe-header[data-scrolled] .fe-brand__mark {
+    inline-size: 42px;
+    block-size: 42px;
+}
+
+.fe-brand__text {
+    display: grid;
+    line-height: 1.35;
+}
+
+.fe-brand__text strong {
+    color: #fff;
+    font-family: var(--fe-font-display);
+    font-size: 1.02rem;
+    font-weight: 700;
+}
+
+.fe-brand__text span {
+    color: var(--fe-mint-light);
+    font-size: 0.78rem;
+    text-align: start;
+}
+
+.fe-brand__place {
+    font-style: normal;
+}
+
+/* ---------- Tools ---------- */
+
+.fe-header__tools {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+}
+
+.fe-iconbtn {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 42px;
+    block-size: 42px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    cursor: pointer;
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
+}
+
+.fe-iconbtn:hover {
+    border-color: var(--fe-mint);
+    color: var(--fe-mint-light);
+}
+
+.fe-lang {
+    display: inline-flex;
+    align-items: center;
+    block-size: 42px;
+    padding-inline: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    font-family: var(--fe-font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.25s, color 0.25s;
+}
+
+.fe-lang:hover {
+    border-color: var(--fe-mint);
+    color: var(--fe-mint-light);
+}
+
+.fe-header__cta {
+    min-block-size: 42px;
+    padding-inline: 18px;
+    border-radius: 13px;
+    font-size: 0.92rem;
+}
+
+.fe-header__cta .fe-icon {
+    flex: none;
+}
+
+.fe-theme-btn__sun {
+    display: none;
+}
+
+:root[data-theme='dark'] .fe-theme-btn__sun {
+    display: block;
+}
+
+:root[data-theme='dark'] .fe-theme-btn__moon {
+    display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .fe-theme-btn__sun {
+        display: block;
+    }
+
+    :root:not([data-theme='light']) .fe-theme-btn__moon {
+        display: none;
+    }
+}
+
+/* ---------- Navigation (desktop: second row of the island) ---------- */
+
+.fe-nav {
+    border-block-start: 1px solid rgba(255, 255, 255, 0.08);
+    padding-block: 8px 10px;
+}
+
+.fe-nav__head,
+.fe-menu-btn,
+.fe-nav-scrim {
+    display: none;
+}
+
+.fe-nav__list {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.fe-nav__item--contact {
+    display: none;
+}
+
+.fe-nav__list a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: rgba(230, 240, 241, 0.74);
+    font-family: var(--fe-font-display);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.25s, background 0.25s;
+}
+
+html[lang='en'] .fe-nav__list a {
+    padding-inline: 8px;
+    font-size: 0.8rem;
+}
+
+/* Eleven links share the row; tighten them on narrower desktops. */
+@media (max-width: 1360px) {
+    .fe-nav__list a {
+        padding-inline: 9px;
+        font-size: 0.86rem;
+    }
+
+    html[lang='en'] .fe-nav__list a {
+        padding-inline: 7px;
+        font-size: 0.78rem;
+    }
+}
+
+/* English labels run longer; the logo already links home, so the row drops it. */
+html[lang='en'] .fe-nav__item--home {
+    display: none;
+}
+
+.fe-nav__list a:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.fe-nav__list a[aria-current='page'] {
+    background: rgba(82, 173, 132, 0.16);
+    box-shadow: inset 0 0 0 1px rgba(143, 224, 185, 0.28);
+    color: #fff;
+    font-weight: 600;
+}
+
+.fe-nav__list a[aria-current='page']::before {
+    content: '';
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 50%;
+    background: var(--fe-mint);
+    box-shadow: 0 0 10px var(--fe-mint);
+}
+
+/* ---------- Navigation (tablet & phone: drawer) ---------- */
+
+@media (max-width: 1199px) {
+    .fe-menu-btn {
+        display: inline-grid;
+    }
+
+    .fe-nav {
+        position: fixed;
+        inset-block: 0;
+        inset-inline-end: 0;
+        z-index: 70;
+        display: flex;
+        flex-direction: column;
+        inline-size: min(340px, 86vw);
+        padding: 18px 22px 28px;
+        border: 0;
+        border-inline-start: 1px solid rgba(143, 224, 185, 0.18);
+        background:
+            radial-gradient(ellipse 80% 40% at 50% 0%, rgba(37, 124, 147, 0.35), transparent 70%),
+            linear-gradient(170deg, #17324d, #0c1e2e);
+        box-shadow: 0 0 60px rgba(5, 16, 24, 0.5);
+        overflow-y: auto;
+        --fe-drawer-from: 100%;
+    }
+
+    /*
+     * Closed, the drawer is display:none rather than translated off-screen: an
+     * off-screen fixed element still widens the page and, in RTL, lets the whole
+     * layout scroll sideways.
+     */
+    .fe-nav:not(.is-open) {
+        display: none;
+    }
+
+    [dir='rtl'] .fe-nav {
+        --fe-drawer-from: -100%;
+    }
+
+    .fe-nav.is-open {
+        animation: fe-drawer-in 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    .fe-nav__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-block-end: 14px;
+        color: rgba(230, 240, 241, 0.6);
+        font-family: var(--fe-font-display);
+        font-size: 0.9rem;
+    }
+
+    .fe-nav__list {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .fe-nav__item--contact,
+    html[lang='en'] .fe-nav__item--home {
+        display: list-item;
+    }
+
+    .fe-nav__list a,
+    html[lang='en'] .fe-nav__list a {
+        display: flex;
+        padding: 13px 16px;
+        border-radius: 14px;
+        font-size: 1.02rem;
+    }
+
+    .fe-nav-scrim:not([hidden]) {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: block;
+        background: rgba(5, 16, 24, 0.55);
+        backdrop-filter: blur(3px);
+    }
+}
+
+@keyframes fe-drawer-in {
+    from {
+        transform: translateX(var(--fe-drawer-from));
+    }
+}
+
+@media (max-width: 1199px) {
+    .fe-island__top,
+    .fe-header[data-scrolled] .fe-island__top {
+        padding-block: 10px;
+    }
+}
+
+@media (max-width: 640px) {
+    .fe-header__cta span {
+        display: none;
+    }
+
+    .fe-header__cta {
+        inline-size: 42px;
+        padding: 0;
+    }
+
+    .fe-brand__text span {
+        display: none;
+    }
+
+    .fe-brand__text strong {
+        font-size: 0.84rem;
+    }
+}
+
+/* Phones: the full name would wrap to several lines, so show the acronym. */
+@media (max-width: 440px) {
+    .fe-brand__mark,
+    .fe-header[data-scrolled] .fe-brand__mark {
+        inline-size: 40px;
+        block-size: 40px;
+    }
+
+    .fe-brand__text strong {
+        display: none;
+    }
+
+    .fe-brand__place {
+        display: none;
+    }
+
+    .fe-brand__text span {
+        display: block;
+        color: #fff;
+        font-family: var(--fe-font-display);
+        font-size: 1.1rem;
+        font-weight: 800;
+    }
+
+    .fe-header__tools {
+        gap: 6px;
+    }
+
+    .fe-iconbtn,
+    .fe-lang,
+    .fe-header__cta {
+        block-size: 38px;
+        min-block-size: 38px;
+    }
+
+    .fe-iconbtn,
+    .fe-header__cta {
+        inline-size: 38px;
+    }
+
+    .fe-lang {
+        padding-inline: 10px;
+    }
+}
