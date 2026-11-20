@@ -47,7 +47,7 @@ class FrontendPagesTest extends TestCase
 
         $this->get(route('frontend.'.$page, ['locale' => $locale]))
             ->assertOk()
-            ->assertSee('<html lang="'.$locale.'" dir="'.$direction.'">', false)
+            ->assertSee('<html lang="'.$locale.'" dir="'.$direction.'" data-theme="light">', false)
             ->assertSee(trans('frontend.nav.'.$page, [], $locale))
             ->assertSee(trans('frontend.brand.name', [], $locale));
     }
@@ -55,6 +55,14 @@ class FrontendPagesTest extends TestCase
     public function test_the_root_url_opens_the_arabic_home_page(): void
     {
         $this->get('/')->assertRedirect(route('frontend.home', ['locale' => 'ar']));
+    }
+
+    public function test_pages_start_in_the_light_theme_regardless_of_the_os_preference(): void
+    {
+        $this->get(route('frontend.home', ['locale' => 'ar']))
+            ->assertOk()
+            ->assertSee('data-theme="light"', false)
+            ->assertSee('<meta name="color-scheme" content="light">', false);
     }
 
     public function test_an_unsupported_locale_is_not_found(): void

@@ -11,14 +11,14 @@
     $canonical = trim($__env->yieldContent('canonical')) ?: url()->current();
 @endphp
 <!DOCTYPE html>
-<html lang="{{ $locale }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}">
+{{-- Light by default whatever the OS prefers; the toggle's saved choice (below) overrides it. --}}
+<html lang="{{ $locale }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#17324d" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0c1c28" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#17324d">
 
     <title>{{ $fullTitle }}</title>
     <meta name="description" content="{{ $description }}">
