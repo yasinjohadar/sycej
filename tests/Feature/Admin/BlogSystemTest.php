@@ -94,6 +94,33 @@ class BlogSystemTest extends TestCase
         $this->assertTrue($post->tags->contains('id', $tag->id));
     }
 
+    public function test_admin_posts_index_renders_posts_with_category_and_tags(): void
+    {
+        $admin = $this->adminUser();
+
+        $category = BlogCategory::query()->create(['name' => 'تقنية', 'is_active' => true]);
+        $tag = BlogTag::query()->create(['name' => 'لارافيل', 'is_active' => true]);
+
+        $post = BlogPost::query()->create([
+            'title' => 'مقال مع تصنيف',
+            'slug' => 'post-with-category',
+            'content' => '<p>محتوى</p>',
+            'status' => 'published',
+            'published_at' => now()->subHour(),
+            'blog_category_id' => $category->id,
+            'author_id' => $admin->id,
+            'language' => 'ar',
+        ]);
+        $post->tags()->attach($tag->id);
+
+        $this->actingAs($admin)
+            ->get(route('admin.blog-posts.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('posts.data.0.category.slug', $category->slug)
+                ->where('posts.data.0.tags.0.slug', $tag->slug));
+    }
+
     public function test_public_blog_show_published_post(): void
     {
         $post = BlogPost::query()->create([
