@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Models\MediaAppearance;
+use App\Rules\MediaUrl;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -29,7 +30,7 @@ class MediaAppearanceRequest extends FormRequest
             'channel_ar' => ['required', 'string', 'max:150'],
             'channel_en' => ['nullable', 'string', 'max:150'],
             'url' => ['required', 'url', 'max:1000'],
-            'image_url' => ['nullable', 'url', 'max:1000'],
+            'image_url' => ['nullable', 'string', 'max:1000', new MediaUrl],
             'published_on' => ['nullable', 'date'],
             'is_published' => ['boolean'],
             'is_featured' => ['boolean'],

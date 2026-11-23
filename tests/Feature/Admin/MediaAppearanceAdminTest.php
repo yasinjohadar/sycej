@@ -111,6 +111,44 @@ class MediaAppearanceAdminTest extends TestCase
         $this->assertDatabaseCount('media_appearances', 0);
     }
 
+    public function test_an_image_picked_from_the_media_library_is_saved(): void
+    {
+        $appearance = MediaAppearance::factory()->video()->create();
+
+        $this->actingAs($this->admin())
+            ->put(route('admin.media-appearances.update', $appearance), $this->payload([
+                'image_url' => '/storage/media/2026/11/9725502c-4fcb.webp',
+            ]))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('admin.media-appearances.index'));
+
+        $this->assertSame('/storage/media/2026/11/9725502c-4fcb.webp', $appearance->refresh()->image_url);
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public static function invalidImageUrls(): array
+    {
+        return [
+            'plain text' => ['not-a-url'],
+            'protocol relative' => ['//evil.example.com/x.jpg'],
+            'javascript scheme' => ['javascript:alert(1)'],
+            'relative without slash' => ['storage/x.jpg'],
+            'path with spaces' => ['/storage/a b.jpg'],
+        ];
+    }
+
+    #[DataProvider('invalidImageUrls')]
+    public function test_an_invalid_image_url_is_rejected(string $imageUrl): void
+    {
+        $this->actingAs($this->admin())
+            ->post(route('admin.media-appearances.store'), $this->payload(['image_url' => $imageUrl]))
+            ->assertSessionHasErrors('image_url');
+
+        $this->assertDatabaseCount('media_appearances', 0);
+    }
+
     public function test_required_fields_are_validated(): void
     {
         $this->actingAs($this->admin())

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Models\TeamMember;
+use App\Rules\MediaUrl;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -29,7 +30,7 @@ class TeamMemberRequest extends FormRequest
             'role_en' => ['nullable', 'string', 'max:200'],
             'bio_ar' => ['nullable', 'string', 'max:3000'],
             'bio_en' => ['nullable', 'string', 'max:3000'],
-            'photo_url' => ['nullable', 'url', 'max:1000'],
+            'photo_url' => ['nullable', 'string', 'max:1000', new MediaUrl],
             'email' => ['nullable', 'email', 'max:150'],
             'linkedin_url' => ['nullable', 'url', 'max:500'],
             'is_published' => ['boolean'],

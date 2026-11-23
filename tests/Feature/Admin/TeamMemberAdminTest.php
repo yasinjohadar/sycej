@@ -146,6 +146,20 @@ class TeamMemberAdminTest extends TestCase
         $this->assertNull($member->photo_url);
     }
 
+    public function test_a_photo_picked_from_the_media_library_is_saved(): void
+    {
+        $member = TeamMember::factory()->create();
+
+        $this->actingAs($this->admin())
+            ->put(route('admin.team-members.update', $member), $this->payload([
+                'photo_url' => '/storage/media/2026/11/reem.webp',
+            ]))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('admin.team-members.index'));
+
+        $this->assertSame('/storage/media/2026/11/reem.webp', $member->refresh()->photo_url);
+    }
+
     public function test_an_admin_can_toggle_visibility(): void
     {
         $member = TeamMember::factory()->create();
